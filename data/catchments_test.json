@@ -1,0 +1,32 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "bbox": [
+                -122.35518187,
+                45.8404293,
+                -122.06136614,
+                45.96773756
+            ],
+            "properties": {
+                "gauge_id": "14219000",
+                "gauge_name": "CANYON CREEK NEAR AMBOY, WA",
+                "area_sq_km": 172.138
+            },
+            "geometry": {
+                "type": "MultiPoint",
+                "coordinates": [
+                    [
+                        -122.4,
+                        45.8
+                    ],
+                    [
+                        -122.3,
+                        45.8
+                    ]
+                ]
+            }
+        }
+    ]
+}
