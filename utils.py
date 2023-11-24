@@ -36,6 +36,12 @@ def long_json_to_list(json_path: str) -> list:
     return catchment_dict_list
 
 def elevation_api_caller(locations: list) -> dict:
+    '''
+    api doc: https://github.com/Jorl17/open-elevation/blob/master/docs/api.md
+    gets a list of location tuples : [(lat, lon), (lat, lon), ...]
+    calls the api with all of them at once (see api doc)
+    returns a dict with the response (for format also see api doc)
+    '''
     url = "https://api.open-elevation.com/api/v1/lookup"
     headers = {
         "Accept": "application/json",
@@ -61,6 +67,13 @@ def elevation_api_caller(locations: list) -> dict:
         return None
 
 def corners_to_grid_by_num_splits(catchment: dict, num_splits: int) -> list:
+    '''
+    gets a catchment dict (see long_json_to_list)
+    and a number of splits (int)
+    creates a grid of num_splits^2 points inside the coodinate corners
+    just devides the space into num_splits * num_splits points
+    returns a list of tuples (lat, lon) of the grid
+    '''
     lat_1 = catchment['lat_1']
     lon_1 = catchment['lon_1']
     lat_2 = catchment['lat_2']
@@ -82,6 +95,13 @@ def corners_to_grid_by_num_splits(catchment: dict, num_splits: int) -> list:
     return grid
 
 def corners_to_grid_by_step_size(catchment: dict, step_size: float) -> list:
+    '''
+    gets a catchment dict (see long_json_to_list)
+    and a step size (float)
+    creates a grid of points inside the coodinate corners
+    just same as the other function, just gives you an option to provide a step size in degrees
+    returns a list of tuples (lat, lon) of the grid
+    '''
     lat_1 = catchment['lat_1']
     lon_1 = catchment['lon_1']
     lat_2 = catchment['lat_2']
@@ -103,6 +123,13 @@ def corners_to_grid_by_step_size(catchment: dict, step_size: float) -> list:
     return grid
 
 def parse_api_resonse_to_dataframe(response: dict) -> pd.DataFrame:
+    '''
+    gets a response from the api (see elevation_api_caller)
+    which is a dictionary
+    parses it into a dataframe
+    (hint: dictionary one field: 'results' which is a list of dictionaries with keys 'latitude', 'longitude', 'elevation')
+    returns a dataframe with columns 'latitude', 'longitude', 'elevation'
+    '''
     df = pd.DataFrame(response['results'])
     df['elevation'] = df['elevation'].astype(float)
     df['latitude'] = df['latitude'].astype(float)
