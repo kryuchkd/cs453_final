@@ -1,6 +1,7 @@
 import json
 import requests
 import pandas as pd
+import numpy as np
 
 def long_json_to_list(json_path: str) -> list:
     '''Gets a path to a Json file,
@@ -135,3 +136,41 @@ def parse_api_resonse_to_dataframe(response: dict) -> pd.DataFrame:
     df['latitude'] = df['latitude'].astype(float)
     df['longitude'] = df['longitude'].astype(float)
     return df
+
+def find_minima_for_point(lat_idx: int, lon_idx: int, radius: int, df: pd.DataFrame) -> tuple:
+    df_as_np_array = df.to_numpy()
+    curr_lat = lat_idx
+    curr_lon = lon_idx
+
+    while True:
+        new_near_lowest_lat, new_near_lowest_lon = min_around_point(curr_lat, curr_lon, radius, df_as_np_array)
+        if new_near_lowest_lat == curr_lat and new_near_lowest_lon == curr_lon:
+            break
+        curr_lat = new_near_lowest_lat
+        curr_lon = new_near_lowest_lon
+    
+    return (curr_lat, curr_lon)
+
+
+def generate_tuples_around_point(x, y, radius):
+    result = []
+    for i in range(x - radius, x + radius + 1):
+        for j in range(y - radius, y + radius + 1):
+            result.append((i, j))
+    return result
+
+def min_around_point(lat_idx: int, lon_idx: int, radius: int, np_arr: np.array) -> tuple:
+    curr_lowest = np_arr[lat_idx, lon_idx]
+    curr_lowest_lat = lat_idx
+    curr_lowest_lon = lon_idx
+    for lat, lon in generate_tuples_around_point(lat_idx, lon_idx, radius):
+        if lat == lat_idx and lon == lon_idx:
+            continue
+        if lat < 0 or lon < 0 or lat >= np_arr.shape[0] or lon >= np_arr.shape[1]:
+            continue
+        if np_arr[lat, lon] < curr_lowest:
+            curr_lowest = np_arr[lat, lon]
+            curr_lowest_lat = lat
+            curr_lowest_lon = lon
+    return (curr_lowest_lat, curr_lowest_lon)
+
