@@ -211,3 +211,40 @@ def min_around_point(lat_idx: int, lon_idx: int, radius: int, df: pd.DataFrame) 
             curr_lowest_lat = lat
             curr_lowest_lon = lon
     return (curr_lowest_lat, curr_lowest_lon)
+
+def find_catchments_from_df(df: pd.DataFrame, radius: int) -> list:
+    '''
+    catchment = {
+        'minima': (lat, lon),
+        'cathcment_points': [(lat, lon), (lat, lon), ...]
+    }
+
+    returns a list of catchments
+    '''
+    grid_size = df.shape[0] # assuming square grid
+    start_to_dest_dict_list = [] # list of dicts with keys: 'start_lat', 'start_lon', 'dest_lat', 'dest_lon'. for every point we save it's lat, lon and the lat, lon of the minima it descends to
+    minimas = [] # list of tuples (lat, lon) of the minimas
+    catchment_dict_list = [] # list of catchments
+
+    for i in range(grid_size):
+        for j in range(grid_size):
+            (dest_lat, dest_lon) = find_minima_for_point(lat_idx= i, lon_idx= j, radius= radius, df=df) # find the minima for the current point
+            result = {'start_lat': i, 'start_lon': j, 'dest_lat': dest_lat, 'dest_lon': dest_lon} # create a dict for the current point and the minima it descends to
+            start_to_dest_dict_list.append(result) # add the dict to the list
+            
+            if i == dest_lat and j == dest_lon: # if the current point is a minima (descends to itself)
+                minimas.append((i, j)) # add it to the minimas list
+            
+            found_a_slot = False
+            for item in catchment_dict_list:
+                if item['minima'] == (dest_lat, dest_lon):
+                    item['cathcment_points'].append((i, j))
+                    found_a_slot = True
+                    break
+            if not found_a_slot:
+                catchment_dict_list.append({'minima': (dest_lat, dest_lon), 'cathcment_points': [(i, j)]})
+    
+    return catchment_dict_list
+    
+
+    
