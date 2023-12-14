@@ -1,8 +1,12 @@
-# cs453_final
-CS 453 - final project repository 
+# CS 453 - Final Project Repository 
+Gavin Corso, Danil Kryuchkov
 
-### Tasks
+Navigate to the main.py file, follow the instructions there if you want to change some parameters.
 
-[X] Filter the Json files down to just 2 points (corners)
-[ ] Look into downloading a direct height map of those regions (vs using google api to get elevations at points)
-[ ] ?
+Otherwise, install dependencies with:
+    pip install -r requirements.txt
+
+And launch the program with (when in this directory):
+    python main.py
+
+It can take a few minutes.
